@@ -12,7 +12,6 @@ public class TextCreator : MonoBehaviour
     private void Start()
     {
         people = FindObjectsOfType<Person>();
-        Debug.Log(people.Length);
 
 		foreach (var person in people)
 		{

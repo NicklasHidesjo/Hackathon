@@ -34,6 +34,6 @@ public class ApplicationManager : MonoBehaviour
 
 	public void GoToAboutUs()
 	{
-		Debug.Log("Here we should open a about us page (Do not forget to add it)");
+		Debug.Log("If you can read this we have not added the way to go to about us yet! do that!");
 	}
 }

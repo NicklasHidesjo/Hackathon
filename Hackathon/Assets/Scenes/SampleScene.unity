@@ -1133,8 +1133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thought: {fileID: 3917322215027418272, guid: 7377a220de5362b4796ffde942f31c76, type: 3}
-  overloadDuration: 3
-  startingTimeBetweenThoughts: 1
+  overloadDuration: 5
+  startingTimeBetweenThoughts: 2
   decreaseBetweenThoughts: 0.1
   lowestTimeBetweenThoughts: 0.01
   touchFreeThoughts: 10

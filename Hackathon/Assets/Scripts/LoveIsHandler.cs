@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class LoveIsHandler : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer background;
+    [SerializeField] Image background;
     [SerializeField] TextMeshProUGUI loveIsText;
     [SerializeField] Image line;
 
@@ -28,7 +28,7 @@ public class LoveIsHandler : MonoBehaviour
     [SerializeField] float startingWordDuration;
     [SerializeField] float maxWordDuration;
     [SerializeField] float drag;
-
+    [SerializeField] float lastRotationWordDuration;
     float currentWordDuration;
     int currentWord;
     int currentRotation;
@@ -44,8 +44,8 @@ public class LoveIsHandler : MonoBehaviour
     [SerializeField] float TimeBeforeNextPhase;
     float timePassedAfterRotating;
 
-    [SerializeField] float rotationTimer;
-    float rotationDuration;
+    [SerializeField] float rotationDuration;
+    float rotationTimer;
 
     [SerializeField] Color backgroundcolor1;
     [SerializeField] Color backgroundcolor2;
@@ -62,9 +62,9 @@ public class LoveIsHandler : MonoBehaviour
 	private void SpinWords()
 	{
         if(!startSpinning) { return; }
-
-        rotationDuration += Time.deltaTime / rotationTimer;
-        background.color = Color.Lerp(backgroundcolor1, backgroundcolor2, rotationDuration);
+        Debug.Log(rotationTimer);
+        rotationTimer += Time.deltaTime / rotationDuration;
+        background.color = Color.Lerp(backgroundcolor1, backgroundcolor2, rotationTimer);
 
 		if (doneRotating) 
         {
@@ -103,6 +103,7 @@ public class LoveIsHandler : MonoBehaviour
                 if(currentRotation == rotations-1)
 				{
                     lastRotation = true;
+                    currentWordDuration = lastRotationWordDuration;
 				}
 			}
 		}
@@ -140,6 +141,7 @@ public class LoveIsHandler : MonoBehaviour
         line.gameObject.SetActive(true);
         loveIsHappening = true;
         loveWord.text = loveWordDefault;
+        rotationTimer = 0;
         fadeIn = true;
 	}
 
@@ -149,6 +151,7 @@ public class LoveIsHandler : MonoBehaviour
         fadeIn = false;
         fadeInDone = false;
 
+        rotationDuration = 0;
         rotationTimer = 0;
 
         pitchBlackTime = 0;

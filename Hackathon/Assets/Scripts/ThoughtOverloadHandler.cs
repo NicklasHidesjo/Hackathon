@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class ThoughtOverloadHandler : MonoBehaviour
 {
-    [SerializeField] GameObject thought;
+    [SerializeField] Thought thought;
+	[SerializeField] Transform parent;
 
-    [SerializeField] SpriteRenderer background;
+    [SerializeField] Image background;
 	[SerializeField] Color faded;
 	[SerializeField] Color nonFaded;
 
@@ -21,7 +25,12 @@ public class ThoughtOverloadHandler : MonoBehaviour
     [SerializeField] Vector2 minBounds;
     [SerializeField] Vector2 maxBounds;
 
-    List<GameObject> thoughts = new List<GameObject>();
+    List<Thought> thoughts = new List<Thought>();
+
+	[SerializeField] List<string> longThoughts = new List<string>();
+	[SerializeField] List<string> shortThoughts = new List<string>();
+
+
 
     float timeSinceLastThought;
     float timeBetweenThoughts;
@@ -86,19 +95,28 @@ public class ThoughtOverloadHandler : MonoBehaviour
 
 	private void SpawnNewThought()
 	{
-		GameObject newThought = Instantiate(thought);
+		Thought newThought = Instantiate(thought);
+		newThought.transform.SetParent(parent);
 
-		if(thoughts.Count < touchFreeThoughts)
+		TextMeshProUGUI text = newThought.Text;
+
+		if (thoughts.Count < touchFreeThoughts)
 		{
 			do
 			{
 				SetNewThoughtPosition(newThought);
 			}
 			while (CheckPosition(newThought));
+		
+			int random = Random.Range(0, longThoughts.Count);
+			text.text = longThoughts[random];
 		}
 		else
 		{
 			SetNewThoughtPosition(newThought);
+
+			int random = Random.Range(0, shortThoughts.Count);
+			text.text = shortThoughts[random];
 		}
 
 		float zRotation = Random.Range(0, 50) * (Random.Range(0, 2) * 2 - 1);
@@ -107,14 +125,14 @@ public class ThoughtOverloadHandler : MonoBehaviour
 		thoughts.Add(newThought);
 	}
 
-	private void SetNewThoughtPosition(GameObject newThought)
+	private void SetNewThoughtPosition(Thought newThought)
 	{
 		float x = Random.Range(minBounds.x, maxBounds.x);
 		float y = Random.Range(minBounds.y, maxBounds.y);
-		newThought.transform.position = new Vector2(x, y);
+		newThought.transform.position = Camera.main.WorldToScreenPoint(new Vector2(x,y));
 	}
 
-	private bool CheckPosition(GameObject newThought)
+	private bool CheckPosition(Thought newThought)
 	{
 		foreach (var thought in thoughts)
 		{
@@ -134,7 +152,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 
 	private void DestroyThoughts()
 	{
-		GameObject[] thoughtsToDestroy = new GameObject[thoughts.Count];
+		Thought[] thoughtsToDestroy = new Thought[thoughts.Count];
 		for (int i = 0; i < thoughts.Count; i++)
 		{
 			thoughtsToDestroy[i] = thoughts[i];
@@ -142,7 +160,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 		thoughts.Clear();
 		foreach (var thought in thoughtsToDestroy)
 		{
-			Destroy(thought);
+			Destroy(thought.gameObject);
 		}
 	}
 

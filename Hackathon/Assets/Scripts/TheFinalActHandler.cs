@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TheFinalActHandler : MonoBehaviour
 {
-    [SerializeField] GameObject AboutUsButton;
     [SerializeField] GameObject PlayAgainButton;
 
     [SerializeField] TextMeshProUGUI FinalMessage;
@@ -32,10 +31,6 @@ public class TheFinalActHandler : MonoBehaviour
 		{
             PlayAgainButton.SetActive(true);
 		}
-        if (fadeTimer > 1)
-        {
-            AboutUsButton.SetActive(true);
-        }
     }
 
 	public void ResetValues()
@@ -43,7 +38,6 @@ public class TheFinalActHandler : MonoBehaviour
         FinalMessage.color = faded;
         fadeTimer = 0;
         enteredTheFinalAct = false;
-        AboutUsButton.SetActive(false);
         PlayAgainButton.SetActive(false);
 	}
 }

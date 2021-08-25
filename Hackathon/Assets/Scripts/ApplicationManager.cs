@@ -44,9 +44,4 @@ public class ApplicationManager : MonoBehaviour
 		currentInteractions = 0;
 		overloadStarted = false;
 	}
-
-	public void GoToAboutUs()
-	{
-		Debug.Log("If you can read this we have not added the way to go to about us yet! do that!");
-	}
 }

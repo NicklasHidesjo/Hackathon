@@ -124,4 +124,14 @@ public class ThoughtOverloadHandler : MonoBehaviour
 			Destroy(thought);
 		}
 	}
+
+	public void ResetValues()
+	{
+		timeSinceLastThought = 0;
+		timeBetweenThoughts = startingTimeBetweenThoughts;
+
+		thoughtOverload = false;
+
+		time = 0;
+	}
 }

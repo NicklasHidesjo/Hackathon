@@ -8,11 +8,11 @@ public class ApplicationManager : MonoBehaviour
 
 	int currentInteractions;
 	bool overloadStarted;
+	public bool OverloadStarted => overloadStarted;
 
 	public void IncreaseInteraction()
 	{
 		if (overloadStarted) { return; }
-
 		currentInteractions++;
 
 		if(currentInteractions >= interactionThreshold)
@@ -24,12 +24,26 @@ public class ApplicationManager : MonoBehaviour
 
 	public void TurnOffScreen()
 	{
+		Debug.Log("turning of screen");
 		FindObjectOfType<LoveIsHandler>().Initialize();
 	}
 
 	public void EnterTheFinalAct()
 	{
 		GetComponent<TheFinalActHandler>().CommenceFinalAct();
+	}
+
+	public void PlayAgain()
+	{
+		FindObjectOfType<ThoughtOverloadHandler>().ResetValues();
+		FindObjectOfType<LoveIsHandler>().ResetValues();
+		GetComponent<TheFinalActHandler>().ResetValues();
+		foreach (var person in FindObjectsOfType<Person>())
+		{
+			person.ResetPerson();
+		}
+		currentInteractions = 0;
+		overloadStarted = false;
 	}
 
 	public void GoToAboutUs()

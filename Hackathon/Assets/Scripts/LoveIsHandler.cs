@@ -20,13 +20,16 @@ public class LoveIsHandler : MonoBehaviour
 
     [SerializeField] List<string> loveWords;
     [SerializeField] TextMeshProUGUI loveWord;
+    [SerializeField] string loveWordDefault;
 
     bool startSpinning;
     [SerializeField] int rotations;
     [SerializeField] int endWord;
-    [SerializeField] float wordDuration;
+    [SerializeField] float startingWordDuration;
+    [SerializeField] float maxWordDuration;
     [SerializeField] float drag;
 
+    float currentWordDuration;
     int currentWord;
     int currentRotation;
     float timeSinceWordChanged;
@@ -54,7 +57,7 @@ public class LoveIsHandler : MonoBehaviour
         {
             timePassedAfterRotating += Time.deltaTime;
             if(timePassedAfterRotating > TimeBeforeNextPhase)
-			{
+			{                
                 loveWord.gameObject.SetActive(false);
                 loveIsText.gameObject.SetActive(false);
                 line.gameObject.SetActive(false);
@@ -63,14 +66,16 @@ public class LoveIsHandler : MonoBehaviour
                 
                 FindObjectOfType<ApplicationManager>().EnterTheFinalAct();
 			}
+            return;
         }
         timeSinceWordChanged += Time.deltaTime;
         loveWord.text = loveWords[currentWord];
 
-
-        if(timeSinceWordChanged > wordDuration)
+        if(timeSinceWordChanged > currentWordDuration)
 		{
             timeSinceWordChanged = 0;
+            currentWordDuration += drag * Time.deltaTime;
+
             currentWord++;
             if(currentWord >= loveWords.Count)
 			{
@@ -80,6 +85,7 @@ public class LoveIsHandler : MonoBehaviour
                 if(lastRotation)
 				{
                     doneRotating = true;
+                    timePassedAfterRotating = 0;
 				}
                 if(currentRotation == rotations-1)
 				{
@@ -92,17 +98,14 @@ public class LoveIsHandler : MonoBehaviour
 	private void FadeLoveIsText()
 	{
         if (!fadeIn) { return; }
+		
+        loveIsText.color = Color.Lerp(faded, nonFaded, fadeTimer);
 
-		loveIsText.color = Color.Lerp(faded, nonFaded, fadeTimer);
-		float x = Mathf.Lerp(0, 1, fadeTimer * 2);
-		float y = Mathf.Lerp(0, 1, fadeTimer * 2);
-		loveIsText.rectTransform.localScale = new Vector3(x, y, 1);
         loveWord.color = Color.Lerp(faded, nonFaded, fadeTimer);
-        loveWord.rectTransform.localScale = new Vector3(x, y, 1);
+
         line.color = Color.Lerp(faded, nonFaded, fadeTimer);	
 		
         fadeTimer += Time.deltaTime / fadeInDuration;
-
         if(fadeTimer > 1)
 		{
             fadeInDone = true;
@@ -119,8 +122,38 @@ public class LoveIsHandler : MonoBehaviour
 
 	public void Initialize()
 	{
+        loveWord.gameObject.SetActive(true);
+        loveIsText.gameObject.SetActive(true);
+        line.gameObject.SetActive(true);
+
         background.SetActive(true);
-;
+        loveWord.text = loveWordDefault;
         fadeIn = true;
 	}
+
+
+    public void ResetValues()
+	{
+        fadeTimer = 0;
+        fadeIn = false;
+        fadeInDone = false;
+
+        startSpinning = false;
+
+        lastRotation = false;
+        doneRotating = false;
+
+        currentWordDuration = startingWordDuration;
+        currentWord = 0;
+        currentRotation = 0;
+        timeSinceWordChanged = 0;
+
+        timePassedAfterRotating = 0;
+
+        background.GetComponent<SpriteRenderer>().color = faded;
+        loveIsText.color = faded;
+        line.color = faded;
+        loveWord.color = faded;
+    }
+
 }

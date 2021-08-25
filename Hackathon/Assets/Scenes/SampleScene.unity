@@ -300,11 +300,12 @@ MonoBehaviour:
   - "\xD6dmjukhet"
   - Att lyssna
   loveWord: {fileID: 556638787}
-  rotations: 4
+  rotations: 8
   endWord: 4
-  wordDuration: 0.5
-  drag: 0
-  TimeBeforeNextPhase: 0
+  startingWordDuration: 0.2
+  maxWordDuration: 2
+  drag: 5
+  TimeBeforeNextPhase: 2
 --- !u!114 &455270274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1133,7 +1134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thought: {fileID: 3917322215027418272, guid: 7377a220de5362b4796ffde942f31c76, type: 3}
-  overloadDuration: 5
+  overloadDuration: 4
   startingTimeBetweenThoughts: 2
   decreaseBetweenThoughts: 0.1
   lowestTimeBetweenThoughts: 0.01

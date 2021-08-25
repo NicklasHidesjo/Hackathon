@@ -39,9 +39,9 @@ public class Person : MonoBehaviour
 
 	private void OnMouseOver()
 	{
+		if(manager.OverloadStarted) { return; }
 		fadeIn = true;
 		textTimer = 0;
-
 		if (interactedWith)
 		{ return; }
 		interactedWith = true;
@@ -83,5 +83,11 @@ public class Person : MonoBehaviour
 			fadeOut = false;
 			fadeIn = false;
 		}
+	}
+
+
+	public void ResetPerson()
+	{
+		interactedWith = false;
 	}
 }

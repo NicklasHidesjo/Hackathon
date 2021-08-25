@@ -1415,6 +1415,7 @@ MonoBehaviour:
   startingTimeBetweenThoughts: 2
   decreaseBetweenThoughts: 0.1
   lowestTimeBetweenThoughts: 0.01
+  betweenThoughtsFadeStartTime: 0.1
   touchFreeThoughts: 10
   minBounds: {x: -7, y: -3.5}
   maxBounds: {x: 7, y: 3.5}

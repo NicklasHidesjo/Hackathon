@@ -5,10 +5,16 @@ using UnityEngine;
 public class ThoughtOverloadHandler : MonoBehaviour
 {
     [SerializeField] GameObject thought;
-    [SerializeField] float overloadDuration;
+
+    [SerializeField] SpriteRenderer background;
+	[SerializeField] Color faded;
+	[SerializeField] Color nonFaded;
+
+	[SerializeField] float overloadDuration;
     [SerializeField] float startingTimeBetweenThoughts;
     [SerializeField] float decreaseBetweenThoughts;
     [SerializeField] float lowestTimeBetweenThoughts;
+	[SerializeField] float betweenThoughtsFadeStartTime;
 
 	[SerializeField] int touchFreeThoughts;
 
@@ -22,9 +28,12 @@ public class ThoughtOverloadHandler : MonoBehaviour
 
     bool thoughtOverload;
 
-    float time;
-    
-    public bool ThoughtOverload 
+    float time; 
+	float fadeTimer;
+
+	float fadeDuration;
+
+	public bool ThoughtOverload 
     { 
         get 
         { 
@@ -47,18 +56,30 @@ public class ThoughtOverloadHandler : MonoBehaviour
 		if (!thoughtOverload) { return; }
 
 		timeSinceLastThought += Time.deltaTime;
+		time += Time.deltaTime;
+
+		if(timeBetweenThoughts < betweenThoughtsFadeStartTime)
+		{
+			if(fadeDuration == 0)
+			{
+				fadeDuration = overloadDuration - time;
+			}
+			fadeTimer += Time.deltaTime / fadeDuration;
+			background.color = Color.Lerp(faded, nonFaded, fadeTimer);
+		}
+
+
 
 		if (timeSinceLastThought < timeBetweenThoughts) { return; }
 		timeSinceLastThought = 0;
 
 		SpawnNewThought();
-
 		DecreaseTimeBetweenThougts();
 
-		time += Time.deltaTime;
-		if (time < overloadDuration) { return; }
 
+		if (time < overloadDuration) { return; }
 		ThoughtOverload = false;
+
 		DestroyThoughts();
 		FindObjectOfType<ApplicationManager>().TurnOffScreen();
 	}
@@ -133,5 +154,6 @@ public class ThoughtOverloadHandler : MonoBehaviour
 		thoughtOverload = false;
 
 		time = 0;
+		fadeTimer = 0;
 	}
 }

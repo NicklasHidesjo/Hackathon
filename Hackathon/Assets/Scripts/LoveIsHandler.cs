@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class LoveIsHandler : MonoBehaviour
 {
-    [SerializeField] GameObject background;
+    [SerializeField] SpriteRenderer background;
     [SerializeField] TextMeshProUGUI loveIsText;
     [SerializeField] Image line;
 
@@ -37,22 +37,35 @@ public class LoveIsHandler : MonoBehaviour
     bool lastRotation;
     bool doneRotating;
 
+    [SerializeField] float pitchBlackDuration;
+    float pitchBlackTime;
+    bool loveIsHappening;
+
     [SerializeField] float TimeBeforeNextPhase;
     float timePassedAfterRotating;
 
+    [SerializeField] float rotationTimer;
+    float rotationDuration;
+
+    [SerializeField] Color backgroundcolor1;
+    [SerializeField] Color backgroundcolor2;
+
     private void Update()
 	{
+        if(!loveIsHappening) { return; }
+        pitchBlackTime += Time.deltaTime;
+        if(pitchBlackTime < pitchBlackDuration) { return; }
 		FadeLoveIsText();
         SpinWords();
 	}
 
 	private void SpinWords()
 	{
-        // make the words first go fast then slow down
-        // especially at the last "rotation" so that you can read all the 
-        // words of what love is.
-
         if(!startSpinning) { return; }
+
+        rotationDuration += Time.deltaTime / rotationTimer;
+        background.color = Color.Lerp(backgroundcolor1, backgroundcolor2, rotationDuration);
+
 		if (doneRotating) 
         {
             timePassedAfterRotating += Time.deltaTime;
@@ -125,18 +138,21 @@ public class LoveIsHandler : MonoBehaviour
         loveWord.gameObject.SetActive(true);
         loveIsText.gameObject.SetActive(true);
         line.gameObject.SetActive(true);
-
-        background.SetActive(true);
+        loveIsHappening = true;
         loveWord.text = loveWordDefault;
         fadeIn = true;
 	}
-
 
     public void ResetValues()
 	{
         fadeTimer = 0;
         fadeIn = false;
         fadeInDone = false;
+
+        rotationTimer = 0;
+
+        pitchBlackTime = 0;
+        loveIsHappening = false;
 
         startSpinning = false;
 
@@ -150,10 +166,9 @@ public class LoveIsHandler : MonoBehaviour
 
         timePassedAfterRotating = 0;
 
-        background.GetComponent<SpriteRenderer>().color = faded;
+        background.color = faded;
         loveIsText.color = faded;
         line.color = faded;
         loveWord.color = faded;
     }
-
 }

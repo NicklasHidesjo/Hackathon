@@ -24,7 +24,6 @@ public class ApplicationManager : MonoBehaviour
 
 	public void TurnOffScreen()
 	{
-		Debug.Log("turning of screen");
 		FindObjectOfType<LoveIsHandler>().Initialize();
 	}
 

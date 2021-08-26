@@ -7,6 +7,13 @@ using UnityEngine.UI;
 
 public class ThoughtOverloadHandler : MonoBehaviour
 {
+	[SerializeField] bool blackout;
+
+
+
+	[SerializeField] float TimeBeforeOverloadStarts;
+
+
     [SerializeField] Thought thought;
 	[SerializeField] Transform parent;
 
@@ -21,6 +28,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	[SerializeField] float betweenThoughtsFadeStartTime;
 
 	[SerializeField] int touchFreeThoughts;
+	[SerializeField] float safeDistance;
 
     [SerializeField] Vector2 minBounds;
     [SerializeField] Vector2 maxBounds;
@@ -30,7 +38,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	[SerializeField] List<string> longThoughts = new List<string>();
 	[SerializeField] List<string> shortThoughts = new List<string>();
 
-
+	float overloadTime = 0;
 
     float timeSinceLastThought;
     float timeBetweenThoughts;
@@ -63,11 +71,21 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	private void Update()
 	{
 		if (!thoughtOverload) { return; }
+		overloadTime += Time.deltaTime;
+		if(overloadTime < TimeBeforeOverloadStarts) { return; }
+
 
 		timeSinceLastThought += Time.deltaTime;
 		time += Time.deltaTime;
 
-		if(timeBetweenThoughts < betweenThoughtsFadeStartTime)
+		if(blackout)
+		{
+			if(time >= overloadDuration) 
+			{
+				background.color = nonFaded;
+			}
+		}
+		else if(timeBetweenThoughts < betweenThoughtsFadeStartTime)
 		{
 			if(fadeDuration == 0)
 			{
@@ -76,7 +94,6 @@ public class ThoughtOverloadHandler : MonoBehaviour
 			fadeTimer += Time.deltaTime / fadeDuration;
 			background.color = Color.Lerp(faded, nonFaded, fadeTimer);
 		}
-
 
 
 		if (timeSinceLastThought < timeBetweenThoughts) { return; }
@@ -109,14 +126,14 @@ public class ThoughtOverloadHandler : MonoBehaviour
 			while (CheckPosition(newThought));
 		
 			int random = Random.Range(0, longThoughts.Count);
-			text.text = longThoughts[random];
+			text.text = longThoughts[random].ToUpper();
 		}
 		else
 		{
 			SetNewThoughtPosition(newThought);
 
 			int random = Random.Range(0, shortThoughts.Count);
-			text.text = shortThoughts[random];
+			text.text = shortThoughts[random].ToUpper();
 		}
 
 		float zRotation = Random.Range(0, 50) * (Random.Range(0, 2) * 2 - 1);
@@ -136,7 +153,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	{
 		foreach (var thought in thoughts)
 		{
-			if(Vector2.Distance(thought.transform.position, newThought.transform.position) < 2f)
+			if(Vector2.Distance(thought.transform.position, newThought.transform.position) < safeDistance)
 			{
 				return true;
 			}
@@ -168,7 +185,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	{
 		timeSinceLastThought = 0;
 		timeBetweenThoughts = startingTimeBetweenThoughts;
-
+		overloadTime = 0;
 		thoughtOverload = false;
 
 		time = 0;

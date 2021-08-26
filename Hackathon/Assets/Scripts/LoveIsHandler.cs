@@ -7,9 +7,13 @@ using UnityEngine.UI;
 
 public class LoveIsHandler : MonoBehaviour
 {
+    [SerializeField] GameObject loveIS;
+
     [SerializeField] Image background;
     [SerializeField] TextMeshProUGUI loveIsText;
-    [SerializeField] Image line;
+    [SerializeField] Image loveBubble;
+    [SerializeField] GameObject fist;
+
 
     [SerializeField] float fadeInDuration;
     [SerializeField] Color faded;
@@ -24,17 +28,7 @@ public class LoveIsHandler : MonoBehaviour
 
     bool startSpinning;
     [SerializeField] int rotations;
-    [SerializeField] int endWord;
-    [SerializeField] float startingWordDuration;
-    [SerializeField] float maxWordDuration;
-    [SerializeField] float drag;
-    [SerializeField] float lastRotationWordDuration;
-    float currentWordDuration;
-    int currentWord;
-    int currentRotation;
-    float timeSinceWordChanged;
 
-    bool lastRotation;
     bool doneRotating;
 
     [SerializeField] float pitchBlackDuration;
@@ -44,11 +38,18 @@ public class LoveIsHandler : MonoBehaviour
     [SerializeField] float TimeBeforeNextPhase;
     float timePassedAfterRotating;
 
-    [SerializeField] float rotationDuration;
-    float rotationTimer;
+    [SerializeField] float backgroundFadeDuration;
+    float fadeBackgroundTimer;
 
     [SerializeField] Color backgroundcolor1;
     [SerializeField] Color backgroundcolor2;
+
+    [SerializeField] float rotationDuration;
+    float time;
+    int currentWord;
+    int totalWords;
+    int wordCount;
+
 
     private void Update()
 	{
@@ -61,19 +62,16 @@ public class LoveIsHandler : MonoBehaviour
 
 	private void SpinWords()
 	{
-        if(!startSpinning) { return; }
-        Debug.Log(rotationTimer);
-        rotationTimer += Time.deltaTime / rotationDuration;
-        background.color = Color.Lerp(backgroundcolor1, backgroundcolor2, rotationTimer);
+        if (!startSpinning) { return; }
 
-		if (doneRotating) 
+        if (doneRotating) 
         {
             timePassedAfterRotating += Time.deltaTime;
             if(timePassedAfterRotating > TimeBeforeNextPhase)
-			{                
-                loveWord.gameObject.SetActive(false);
-                loveIsText.gameObject.SetActive(false);
-                line.gameObject.SetActive(false);
+			{
+
+                // make this only set the "what is love" in canvas to non active)
+                loveIS.SetActive(false);
 
                 // add a fade out here and then after it's done commence the final act
                 
@@ -81,67 +79,77 @@ public class LoveIsHandler : MonoBehaviour
 			}
             return;
         }
-        timeSinceWordChanged += Time.deltaTime;
-        loveWord.text = loveWords[currentWord];
 
-        if(timeSinceWordChanged > currentWordDuration)
+        if(wordCount == totalWords -1)
 		{
-            timeSinceWordChanged = 0;
-            currentWordDuration += drag * Time.deltaTime;
-
-            currentWord++;
-            if(currentWord >= loveWords.Count)
-			{
-                currentWord = 0;
-                currentRotation++;
-
-                if(lastRotation)
-				{
-                    doneRotating = true;
-                    timePassedAfterRotating = 0;
-				}
-                if(currentRotation == rotations-1)
-				{
-                    lastRotation = true;
-                    currentWordDuration = lastRotationWordDuration;
-				}
-			}
+            doneRotating = true;
+            timePassedAfterRotating = 0;
+            return;
 		}
+
+        time += Time.deltaTime / rotationDuration;
+
+        float word = Mathf.Lerp(wordCount, totalWords, time);
+        currentWord = (int)word % loveWords.Count;
+        wordCount = (int)word;
+        //wordCount = Mathf.Clamp(wordCount ,0, totalWords - 3);
+        loveWord.text = loveWords[currentWord];
 	}
 
 	private void FadeLoveIsText()
 	{
         if (!fadeIn) { return; }
-		
+
+
+        faded = loveBubble.color;
+        faded.a = 0;
+        nonFaded = loveBubble.color;
+        nonFaded.a = 1;
+        loveBubble.color = Color.Lerp(faded, nonFaded, fadeTimer);	
+
+
+        faded = loveIsText.color;
+        faded.a = 0;
+        nonFaded = loveIsText.color;
+        nonFaded.a = 1;
+
+        fadeBackgroundTimer += Time.deltaTime / backgroundFadeDuration;
+        background.color = Color.Lerp(backgroundcolor1, backgroundcolor2, fadeBackgroundTimer);
+
+
         loveIsText.color = Color.Lerp(faded, nonFaded, fadeTimer);
 
         loveWord.color = Color.Lerp(faded, nonFaded, fadeTimer);
 
-        line.color = Color.Lerp(faded, nonFaded, fadeTimer);	
 		
         fadeTimer += Time.deltaTime / fadeInDuration;
-        if(fadeTimer > 1)
+        if(fadeTimer > 1 && !fadeInDone)
 		{
             fadeInDone = true;
-		}
+            fist.SetActive(true);
+        }
 	}
 
 	private void OnMouseDown()
 	{
         if(fadeInDone && !startSpinning)
 		{
+            fist.SetActive(false);
             startSpinning = true;
 		}
 	}
 
 	public void Initialize()
 	{
-        loveWord.gameObject.SetActive(true);
-        loveIsText.gameObject.SetActive(true);
-        line.gameObject.SetActive(true);
+        totalWords = rotations * loveWords.Count;
+        time = 0;
+        wordCount = 0;
+
+        loveIS.SetActive(true);
+
         loveIsHappening = true;
         loveWord.text = loveWordDefault;
-        rotationTimer = 0;
+        fadeBackgroundTimer = 0;
         fadeIn = true;
 	}
 
@@ -151,27 +159,24 @@ public class LoveIsHandler : MonoBehaviour
         fadeIn = false;
         fadeInDone = false;
 
-        rotationDuration = 0;
-        rotationTimer = 0;
+        backgroundFadeDuration = 0;
+        fadeBackgroundTimer = 0;
 
         pitchBlackTime = 0;
         loveIsHappening = false;
 
         startSpinning = false;
-
-        lastRotation = false;
         doneRotating = false;
-
-        currentWordDuration = startingWordDuration;
-        currentWord = 0;
-        currentRotation = 0;
-        timeSinceWordChanged = 0;
 
         timePassedAfterRotating = 0;
 
         background.color = faded;
         loveIsText.color = faded;
-        line.color = faded;
+        
         loveWord.color = faded;
+
+        faded = loveBubble.color;
+        faded.a = 0;
+        loveBubble.color = faded;
     }
 }

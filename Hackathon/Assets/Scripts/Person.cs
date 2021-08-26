@@ -5,67 +5,74 @@ using UnityEngine.UI;
 
 public class Person : MonoBehaviour
 {
-	[SerializeField] GameObject thoughtBubble;
-	public GameObject ThoughtBubble { get { return thoughtBubble; } }
+	[SerializeField] ThoughtController thoughtBubble;
 
-	[SerializeField] [TextArea(5, 20)] string thoughtText = "";
-	public string ThoughtText { get { return thoughtText; } }
+	[SerializeField] Sprite blankExpression;
+	[SerializeField] Sprite nonBlankExpression;
 
+	[SerializeField] List<string> thoughts = new List<string>();
+	int lastThought;
 
 	[SerializeField] float fadeDuration = 1f;
 	[SerializeField] Color faded;
 	[SerializeField] Color nonFaded;
 	float fadeTimer;
 	bool fadeIn;
-	bool fadeOut;
-
 	bool interactedWith;
 
-	[SerializeField] float textDuration = 2f;
-	float textTimer;
-
-
-	SpriteRenderer thoughtRenderer;
+	Image thoughtRenderer;
 	ApplicationManager manager;
+
+	SpriteRenderer face;
 
 	private void Start()
 	{		
 		fadeIn = false;
 		fadeTimer = 0;
 		
-		thoughtRenderer = thoughtBubble.GetComponent<SpriteRenderer>();
+		thoughtRenderer = thoughtBubble.GetComponent<Image>();
 		manager = FindObjectOfType<ApplicationManager>();
+		face = GetComponent<SpriteRenderer>();
+		
+		face.sprite = blankExpression;
 	}
 
 	private void OnMouseOver()
 	{
-		if(manager.OverloadStarted) { return; }
+		face.sprite = nonBlankExpression;
+	}
+
+	private void OnMouseDown()
+	{
+		if (manager.OverloadStarted) { return; }
+
+		if (!fadeIn)
+		{
+			int random;
+			do
+			{
+				random = Random.Range(0, thoughts.Count);
+			}
+			while (random == lastThought);
+			thoughtBubble.SetText(thoughts[random]);
+			lastThought = random;
+		}
+
 		fadeIn = true;
-		textTimer = 0;
-		if (interactedWith)
-		{ return; }
+		if (interactedWith){ return; }
 		interactedWith = true;
 		manager.IncreaseInteraction();
 	}
 
-/*	private void OnMouseDown()
-	{
-		fadeIn = !fadeIn;
-		textTimer = 0;
-
-		if (interactedWith){ return; }
-		interactedWith = true;
-		manager.IncreaseInteraction();
-	}*/
-
 	private void OnMouseExit()
 	{
-		fadeOut = true;;
+		fadeIn = false;
+		face.sprite = blankExpression;
 	}
 
 	private void Update()
 	{
-		thoughtRenderer.material.color = Color.Lerp(faded, nonFaded, fadeTimer);
+		thoughtRenderer.color = Color.Lerp(faded, nonFaded, fadeTimer);
 		if (fadeIn)
 		{
 			fadeTimer += Time.deltaTime / fadeDuration;
@@ -76,13 +83,13 @@ public class Person : MonoBehaviour
 		}
 		fadeTimer = Mathf.Clamp(fadeTimer, 0, 1);
 
-		if(!fadeOut) { return; }
+/*		if(!fadeOut) { return; }
 		textTimer += Time.deltaTime;
 		if (textTimer > textDuration)
 		{
 			fadeOut = false;
 			fadeIn = false;
-		}
+		}*/
 	}
 
 

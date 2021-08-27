@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class ThoughtOverloadHandler : MonoBehaviour
 {
-	[SerializeField] bool blackout;
-
-
+	[SerializeField] AudioSource noice;
+	[SerializeField] AudioClip sound;
+	float soundTimer;
 
 	[SerializeField] float TimeBeforeOverloadStarts;
 
@@ -44,11 +44,10 @@ public class ThoughtOverloadHandler : MonoBehaviour
     float timeBetweenThoughts;
 
     bool thoughtOverload;
+	float lowestVolume;
 
-    float time; 
-	float fadeTimer;
-
-	float fadeDuration;
+    float time;
+	ApplicationManager manager;
 
 	public bool ThoughtOverload 
     { 
@@ -58,12 +57,17 @@ public class ThoughtOverloadHandler : MonoBehaviour
         } 
         set 
         {
-            thoughtOverload = value; 
+            thoughtOverload = value;
+			noice.clip = sound;
+			noice.loop = true;
+			noice.Play();
         } 
     }
 
 	private void Start()
 	{
+		manager = FindObjectOfType<ApplicationManager>();
+		lowestVolume = manager.AulaVolume;
         timeBetweenThoughts = startingTimeBetweenThoughts;
     }
 
@@ -72,29 +76,25 @@ public class ThoughtOverloadHandler : MonoBehaviour
 	{
 		if (!thoughtOverload) { return; }
 		overloadTime += Time.deltaTime;
-		if(overloadTime < TimeBeforeOverloadStarts) { return; }
-
-
-		timeSinceLastThought += Time.deltaTime;
 		time += Time.deltaTime;
+		if(overloadTime < TimeBeforeOverloadStarts) { return; }
+		manager.ChangeClickedPerson(null);
+		timeSinceLastThought += Time.deltaTime;
 
-		if(blackout)
+		if (time >= overloadDuration)
 		{
-			if(time >= overloadDuration) 
-			{
-				background.color = nonFaded;
-			}
-		}
-		else if(timeBetweenThoughts < betweenThoughtsFadeStartTime)
-		{
-			if(fadeDuration == 0)
-			{
-				fadeDuration = overloadDuration - time;
-			}
-			fadeTimer += Time.deltaTime / fadeDuration;
-			background.color = Color.Lerp(faded, nonFaded, fadeTimer);
+			background.color = nonFaded;
 		}
 
+		soundTimer += Time.deltaTime / overloadDuration;
+		if (!manager.Muted)
+		{
+			noice.volume = Mathf.Lerp(lowestVolume, 1, soundTimer);
+		}
+		else
+		{
+			noice.volume = 0;
+		}
 
 		if (timeSinceLastThought < timeBetweenThoughts) { return; }
 		timeSinceLastThought = 0;
@@ -169,6 +169,7 @@ public class ThoughtOverloadHandler : MonoBehaviour
 
 	private void DestroyThoughts()
 	{
+		noice.Stop();
 		Thought[] thoughtsToDestroy = new Thought[thoughts.Count];
 		for (int i = 0; i < thoughts.Count; i++)
 		{
@@ -189,6 +190,6 @@ public class ThoughtOverloadHandler : MonoBehaviour
 		thoughtOverload = false;
 
 		time = 0;
-		fadeTimer = 0;
+		soundTimer = 0;
 	}
 }

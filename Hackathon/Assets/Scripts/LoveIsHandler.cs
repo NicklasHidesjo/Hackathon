@@ -12,8 +12,10 @@ public class LoveIsHandler : MonoBehaviour
     [SerializeField] Image background;
     [SerializeField] TextMeshProUGUI loveIsText;
     [SerializeField] Image loveBubble;
-    [SerializeField] GameObject fist;
 
+
+    [SerializeField] float spinnDelay;
+    float spinnDelayPassed;
 
     [SerializeField] float fadeInDuration;
     [SerializeField] Color faded;
@@ -24,9 +26,8 @@ public class LoveIsHandler : MonoBehaviour
 
     [SerializeField] List<string> loveWords;
     [SerializeField] TextMeshProUGUI loveWord;
-    [SerializeField] string loveWordDefault;
+    [SerializeField] float fontIncrease;
 
-    bool startSpinning;
     [SerializeField] int rotations;
 
     bool doneRotating;
@@ -49,9 +50,24 @@ public class LoveIsHandler : MonoBehaviour
     int currentWord;
     int totalWords;
     int wordCount;
+    float word;
+    int previousWord;
 
 
-    private void Update()
+    [SerializeField] AudioClip tickSound;
+    [SerializeField] AudioSource audioPlayer;
+    [SerializeField] float volume;
+
+
+
+    ApplicationManager manager;
+
+	private void Start()
+	{
+        manager = FindObjectOfType<ApplicationManager>();
+	}
+
+	private void Update()
 	{
         if(!loveIsHappening) { return; }
         pitchBlackTime += Time.deltaTime;
@@ -62,15 +78,15 @@ public class LoveIsHandler : MonoBehaviour
 
 	private void SpinWords()
 	{
-        if (!startSpinning) { return; }
+        if (!fadeInDone) { return; }
+        spinnDelayPassed += Time.deltaTime;
+        if(spinnDelayPassed < spinnDelay) { return; }
 
         if (doneRotating) 
         {
             timePassedAfterRotating += Time.deltaTime;
             if(timePassedAfterRotating > TimeBeforeNextPhase)
 			{
-
-                // make this only set the "what is love" in canvas to non active)
                 loveIS.SetActive(false);
 
                 // add a fade out here and then after it's done commence the final act
@@ -89,24 +105,41 @@ public class LoveIsHandler : MonoBehaviour
 
         time += Time.deltaTime / rotationDuration;
 
-        float word = Mathf.Lerp(wordCount, totalWords, time);
+        word = Mathf.Lerp(wordCount, totalWords, time);
         currentWord = (int)word % loveWords.Count;
         wordCount = (int)word;
         //wordCount = Mathf.Clamp(wordCount ,0, totalWords - 3);
+
+        if(currentWord != previousWord && !manager.Muted)
+		{
+            audioPlayer.clip = tickSound;
+            audioPlayer.loop = false;
+            audioPlayer.volume = volume;
+            audioPlayer.Play();
+		}
+
+        if (wordCount == totalWords - 1)
+        {
+            loveWord.fontStyle = FontStyles.Bold;
+            float size = loveWord.fontSize;
+            size += fontIncrease;
+            loveWord.fontSizeMax = 1000;
+        }
+
         loveWord.text = loveWords[currentWord];
+
+        previousWord = currentWord;
 	}
 
 	private void FadeLoveIsText()
 	{
         if (!fadeIn) { return; }
 
-
         faded = loveBubble.color;
         faded.a = 0;
         nonFaded = loveBubble.color;
         nonFaded.a = 1;
         loveBubble.color = Color.Lerp(faded, nonFaded, fadeTimer);	
-
 
         faded = loveIsText.color;
         faded.a = 0;
@@ -126,17 +159,7 @@ public class LoveIsHandler : MonoBehaviour
         if(fadeTimer > 1 && !fadeInDone)
 		{
             fadeInDone = true;
-            fist.SetActive(true);
         }
-	}
-
-	private void OnMouseDown()
-	{
-        if(fadeInDone && !startSpinning)
-		{
-            fist.SetActive(false);
-            startSpinning = true;
-		}
 	}
 
 	public void Initialize()
@@ -148,7 +171,7 @@ public class LoveIsHandler : MonoBehaviour
         loveIS.SetActive(true);
 
         loveIsHappening = true;
-        loveWord.text = loveWordDefault;
+        loveWord.text = loveWords[0];
         fadeBackgroundTimer = 0;
         fadeIn = true;
 	}
@@ -165,7 +188,6 @@ public class LoveIsHandler : MonoBehaviour
         pitchBlackTime = 0;
         loveIsHappening = false;
 
-        startSpinning = false;
         doneRotating = false;
 
         timePassedAfterRotating = 0;

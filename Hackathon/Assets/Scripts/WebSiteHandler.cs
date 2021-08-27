@@ -10,10 +10,16 @@ public class WebSiteHandler : MonoBehaviour
 
 	public void ReloadPage()
 	{
-		//Reload();
+		Reload();
 	}
 	public void GoToAbout()
 	{
 		Application.OpenURL("https://mellanraderna.vercel.app/om-projektet");
+	}
+	public void GoToRaddningsMissionen()
+	{
+		//https://gava.raddningsmissionen.se/pfs/donation/dar_det_behovs_bast?interval=recurringlock&grouplock=1
+		//https://raddningsmissionen.se/omoss
+		Application.OpenURL("https://raddningsmissionen.se/gava");
 	}
 }

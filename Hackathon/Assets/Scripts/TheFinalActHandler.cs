@@ -7,6 +7,7 @@ public class TheFinalActHandler : MonoBehaviour
 {
     [SerializeField] GameObject PlayAgainButton;
     [SerializeField] GameObject AboutButton;
+    [SerializeField] GameObject RaddningsMissionenButton;
 
     [SerializeField] TextMeshProUGUI finalMessagePartOne;
     [SerializeField] TextMeshProUGUI finalMessagePartTwo;
@@ -42,6 +43,7 @@ public class TheFinalActHandler : MonoBehaviour
 		{
             PlayAgainButton.SetActive(true);
             AboutButton.SetActive(true);
+            RaddningsMissionenButton.SetActive(true);
 		}
     }
 
@@ -53,5 +55,6 @@ public class TheFinalActHandler : MonoBehaviour
         enteredTheFinalAct = false;
         PlayAgainButton.SetActive(false);
         AboutButton.SetActive(false);
+        RaddningsMissionenButton.SetActive(false);
 	}
 }

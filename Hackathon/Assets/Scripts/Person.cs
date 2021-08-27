@@ -10,8 +10,7 @@ public class Person : MonoBehaviour
 	[SerializeField] Sprite blankExpression;
 	[SerializeField] Sprite nonBlankExpression;
 
-	[SerializeField] List<string> thoughts = new List<string>();
-	int lastThought;
+	[SerializeField] string thought;
 
 	[SerializeField] float fadeDuration = 1f;
 	[SerializeField] Color faded;
@@ -60,14 +59,7 @@ public class Person : MonoBehaviour
 
 		if (!fadeIn)
 		{
-			int random;
-			do
-			{
-				random = Random.Range(0, thoughts.Count);
-			}
-			while (random == lastThought);
-			thoughtBubble.SetText(thoughts[random]);
-			lastThought = random;
+			thoughtBubble.SetText(thought);
 		}
 
 		fadeIn = true;

@@ -44,7 +44,8 @@ public class ApplicationManager : MonoBehaviour
 		clickedOn.text = currentInteractions + "/" + interactionThreshold;
 		clickedOn.gameObject.SetActive(true);
 		audioPlayer = FindObjectOfType<AudioSource>();
-		audioPlayer.volume = aulaVolume;
+		audioPlayer.volume = 0;
+		inAula = true;
 	}
 
 	public void IncreaseInteraction()
@@ -109,7 +110,7 @@ public class ApplicationManager : MonoBehaviour
 		}
 		else
 		{
-			if(inAula)
+			if(inAula && started)
 			{
 				audioPlayer.volume = aulaVolume;
 			}
@@ -130,6 +131,9 @@ public class ApplicationManager : MonoBehaviour
 	{
 		firstInformationWindow.SetActive(false);
 		started = true;
-		inAula = true;
+		if(!muted)
+		{
+			audioPlayer.volume = aulaVolume;
+		}
 	}
 }

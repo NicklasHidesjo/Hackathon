@@ -1912,10 +1912,7 @@ MonoBehaviour:
   thoughtBubble: {fileID: 349295687}
   blankExpression: {fileID: 21300000, guid: ed9636dd38b76764c82cf45496d88c5d, type: 3}
   nonBlankExpression: {fileID: 21300000, guid: 3d28ef904f94f1f4ebcce650e2ff4ed6, type: 3}
-  thoughts:
-  - "Kommer n\xE5gon att kunna \xE4lska mig? "
-  - "Om jag skulle... skulle n\xE5gon ens bry sig att jag f\xF6rsvann?"
-  - "Ibland \xF6nskar jag bara att n\xE5gon fanns d\xE4r. "
+  thought: "Kommer hon ha druckit n\xE4r jag kommer hem?"
   fadeDuration: 1
   faded: {r: 1, g: 1, b: 1, a: 0}
   nonFaded: {r: 1, g: 1, b: 1, a: 1}
@@ -2180,10 +2177,7 @@ MonoBehaviour:
   thoughtBubble: {fileID: 1830757660}
   blankExpression: {fileID: 21300000, guid: 5574a304c03be5644a46ed63bc8b89b4, type: 3}
   nonBlankExpression: {fileID: 21300000, guid: f973eed49ded46f488378d22ebc1bba0, type: 3}
-  thoughts:
-  - "Har hon handlat idag, eller ska jag \xE4ta extra p\xE5 lunchen igen?"
-  - "Kommer hon ha druckit n\xE4r jag kommer hem?"
-  - "Ser n\xE5gon bl\xE5m\xE4rkena? "
+  thought: "Har hon handlat idag, eller ska jag \xE4ta extra p\xE5 lunchen igen?"
   fadeDuration: 1
   faded: {r: 1, g: 1, b: 1, a: 0}
   nonFaded: {r: 1, g: 1, b: 1, a: 1}
@@ -2762,11 +2756,7 @@ MonoBehaviour:
   thoughtBubble: {fileID: 1408731007}
   blankExpression: {fileID: 21300000, guid: 2853063c943b5254492daf4fb5f2887f, type: 3}
   nonBlankExpression: {fileID: 21300000, guid: 5eecdf5a37cd4e3459a52c4575eee2ef, type: 3}
-  thoughts:
-  - "Om jag bara hade sett ut som henne, d\xE5 skulle allt bli bra. "
-  - "Det g\xF6r s\xE5 ont att se hur perfekt hon \xE4r, jag kommer aldrig att se
-    ut som henne, det spelar ingen roll hur m\xE5nga m\xE5ltider jag hoppar. "
-  - "Jag \xF6nskar att jag vore n\xE5gon annan. "
+  thought: Vart kommer vi sova inatt?
   fadeDuration: 1
   faded: {r: 1, g: 1, b: 1, a: 0}
   nonFaded: {r: 1, g: 1, b: 1, a: 1}
@@ -4169,7 +4159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noice: {fileID: 1270738979}
   sound: {fileID: 8300000, guid: 3b74f7abfef3c6e43ad8ac81097f74b7, type: 3}
-  TimeBeforeOverloadStarts: 1
+  TimeBeforeOverloadStarts: 2
   thought: {fileID: 2752934699635190219, guid: 7377a220de5362b4796ffde942f31c76, type: 3}
   parent: {fileID: 954477440}
   background: {fileID: 537557880}
@@ -4797,12 +4787,7 @@ MonoBehaviour:
   thoughtBubble: {fileID: 1473413240}
   blankExpression: {fileID: 21300000, guid: 7ec1d29b941aee84c97e1d9294d2fdb6, type: 3}
   nonBlankExpression: {fileID: 21300000, guid: 1eb6847f23eed4a499a2266bb1b48b87, type: 3}
-  thoughts:
-  - "Det \xE4r lika bra att jag hoppar av... Jag kommer aldrig f\xF6rst\xE5 det h\xE4r.
-    Hur kan man ens vara s\xE5 h\xE4r korkad. "
-  - "Ibland \xF6nskar jag att han inte ens skulle komma tillbaka, det \xE4r som att
-    allt \xE4r lugnare n\xE4r han sitter inne. "
-  - 'Jag kommer aldrig att vara bra nog... '
+  thought: Jag hoppas att han aldrig hittar mig och mamma igen.
   fadeDuration: 1
   faded: {r: 1, g: 1, b: 1, a: 0}
   nonFaded: {r: 1, g: 1, b: 1, a: 1}

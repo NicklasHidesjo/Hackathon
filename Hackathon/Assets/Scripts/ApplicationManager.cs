@@ -81,7 +81,7 @@ public class ApplicationManager : MonoBehaviour
 
 	public void PlayAgain()
 	{
-		FindObjectOfType<ThoughtOverloadHandler>().ResetValues();
+/*		FindObjectOfType<ThoughtOverloadHandler>().ResetValues();
 		FindObjectOfType<LoveIsHandler>().ResetValues();
 		GetComponent<TheFinalActHandler>().ResetValues();
 		foreach (var person in FindObjectsOfType<Person>())
@@ -94,7 +94,7 @@ public class ApplicationManager : MonoBehaviour
 		informationWindow.SetActive(true);
 		informationHandler.SetActive(true);
 		overloadStarted = false;
-		started = false;
+		started = false;*/
 	}
 
 	public void Mute()
